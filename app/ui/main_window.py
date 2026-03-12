@@ -40,9 +40,6 @@ class MainWindow(QMainWindow):
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
 
-        self._sidebar = Sidebar(self._switch_page)
-        root.addWidget(self._sidebar)
-
         self._pages = QStackedWidget()
         self._projects_page = ProjectsPage(
             self._service, self._open_project,
@@ -67,6 +64,8 @@ class MainWindow(QMainWindow):
         ]:
             self._pages.addWidget(page)
 
+        self._sidebar = Sidebar(self._switch_page)
+        root.addWidget(self._sidebar)
         root.addWidget(self._pages, 1)
         self.setCentralWidget(central)
         self.setStyleSheet(STYLE)

@@ -3,8 +3,11 @@ from __future__ import annotations
 from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
+    QFileDialog,
     QFormLayout,
+    QHBoxLayout,
     QLineEdit,
+    QPushButton,
     QTextEdit,
     QVBoxLayout,
     QWidget,
@@ -23,12 +26,19 @@ class ProjectDialog(QDialog):
         form = QFormLayout()
 
         self.name_edit = QLineEdit()
-        self.dxf_edit = QLineEdit("data/samples/demo_part.dxf")
+        self.dxf_edit = QLineEdit()
         self.desc_edit = QTextEdit()
         self.desc_edit.setFixedHeight(90)
 
+        dxf_row = QHBoxLayout()
+        browse_btn = QPushButton("Обзор…")
+        browse_btn.setFixedWidth(80)
+        browse_btn.clicked.connect(self._browse_dxf)
+        dxf_row.addWidget(self.dxf_edit)
+        dxf_row.addWidget(browse_btn)
+
         form.addRow("Название:", self.name_edit)
-        form.addRow("DXF:", self.dxf_edit)
+        form.addRow("DXF:", dxf_row)
         form.addRow("Описание:", self.desc_edit)
         layout.addLayout(form)
 
@@ -38,6 +48,16 @@ class ProjectDialog(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
+
+    def _browse_dxf(self) -> None:
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Выберите DXF-файл",
+            "",
+            "DXF-файлы (*.dxf);;Все файлы (*)",
+        )
+        if path:
+            self.dxf_edit.setText(path)
 
     def data(self) -> tuple[str, str, str]:
         return (

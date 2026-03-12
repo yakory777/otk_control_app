@@ -40,7 +40,7 @@ class InMemoryProjectRepository:
             Project(
                 project_id=1,
                 name="Корпус 12А",
-                dxf_file="demo_part.dxf",
+                dxf_file="data/examples/dra2 2.dxf",
                 description="Демо-проект для ОТК",
                 last_control="12.03.2026",
                 points=[
@@ -69,7 +69,7 @@ class InMemoryProjectRepository:
             Project(
                 project_id=2,
                 name="Втулка B7",
-                dxf_file="demo_part.dxf",
+                dxf_file="data/examples/dra2 3.dxf",
                 description="Вспомогательный проект",
                 last_control="10.03.2026",
             ),

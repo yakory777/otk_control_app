@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 )
 
 from app.services.project_service import ProjectService
-from app.ui.components.dxf_view import DxfMockView
+from app.ui.components.dxf_view import DxfView
 
 
 class TemplatePage(QWidget):
@@ -51,7 +51,8 @@ class TemplatePage(QWidget):
 
         center = QGroupBox("DXF Viewer")
         center_layout = QVBoxLayout(center)
-        center_layout.addWidget(DxfMockView())
+        self._dxf_view = DxfView()
+        center_layout.addWidget(self._dxf_view)
 
         right = QGroupBox("Контрольные точки")
         right_layout = QVBoxLayout(right)
@@ -84,6 +85,8 @@ class TemplatePage(QWidget):
             f"Описание: {project.description}\n"
             f"Последний контроль: {project.last_control}"
         )
+        if project.dxf_file:
+            self._dxf_view.load_file(project.dxf_file)
         self._table.setRowCount(len(project.points))
         for row, pt in enumerate(project.points):
             vals = [
