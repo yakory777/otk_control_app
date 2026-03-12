@@ -1,2 +1,8 @@
 __pycache__
-
+.history/
+.mypy_cache/
+.venv/
+.env/
+build/
+dist/OTK_DXF_Inspector/_internal/
+version_info.txt
