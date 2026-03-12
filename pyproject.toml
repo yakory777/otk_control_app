@@ -1,6 +1,6 @@
 [project]
 name = "otk-control-app"
-version = "0.0.1"
+version = "0.0.2"
 description = "this project will show dxf files like prewiew and andlitics this"
 authors = [
     {name = "yakoty777 & v1k1ng31"}
