@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.domain.models import Project
+from app.domain.models import ControlPoint, Project
 from app.domain.repositories import IProjectRepository
 
 
@@ -56,3 +56,38 @@ class ProjectService:
             self._current_project_id = (
                 projects[0].project_id if projects else None
             )
+
+    def add_point(
+        self,
+        name: str,
+        kind: str,
+        true_value: str,
+        tol_plus: str,
+        tol_minus: str,
+    ) -> ControlPoint | None:
+        """Добавить контрольный размер в текущий проект."""
+        project = self.current_project()
+        if project is None:
+            return None
+        number = (
+            max((p.number for p in project.points), default=0) + 1
+        )
+        point = ControlPoint(
+            number=number,
+            name=name,
+            kind=kind,
+            true_value=true_value,
+            tol_plus=tol_plus,
+            tol_minus=tol_minus,
+        )
+        project.points.append(point)
+        return point
+
+    def remove_point(self, number: int) -> None:
+        """Удалить контрольный размер по номеру из текущего проекта."""
+        project = self.current_project()
+        if project is None:
+            return
+        project.points = [
+            p for p in project.points if p.number != number
+        ]
