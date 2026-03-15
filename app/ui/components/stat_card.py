@@ -12,11 +12,15 @@ class StatCard(QFrame):
 
         lbl_title = QLabel(title)
         lbl_title.setObjectName("statTitle")
-        lbl_value = QLabel(value)
-        lbl_value.setObjectName("statValue")
+        self._lbl_value = QLabel(value)
+        self._lbl_value.setObjectName("statValue")
         lbl_note = QLabel(note)
         lbl_note.setObjectName("statNote")
 
         layout.addWidget(lbl_title)
-        layout.addWidget(lbl_value)
+        layout.addWidget(self._lbl_value)
         layout.addWidget(lbl_note)
+
+    def set_value(self, value: str) -> None:
+        """Обновить отображаемое значение."""
+        self._lbl_value.setText(value)

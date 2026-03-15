@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 
 from PySide6.QtWidgets import (
@@ -14,46 +15,37 @@ from PySide6.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
-    QWidget,
 )
 
-from app.services.project_service import ProjectService
 from app.domain.models import Project
+from app.services.project_service import ProjectService
 from app.ui.components.project_dialog import ProjectDialog
 from app.ui.components.stat_card import StatCard
+from app.ui.pages.base_page import BasePage
+
+logger = logging.getLogger(__name__)
 
 
-class ProjectsPage(QWidget):
+class ProjectsPage(BasePage):
     def __init__(
         self,
         service: ProjectService,
         on_open_project: Callable[[Project], None],
     ) -> None:
-        super().__init__()
+        super().__init__(
+            "Панель ОТК",
+            "Добавляйте проекты, удаляйте их"
+            " и открывайте для работы",
+        )
         self._service = service
         self._on_open_project = on_open_project
 
-        self._layout = QVBoxLayout(self)
-        self._layout.setContentsMargins(24, 24, 24, 24)
-        self._layout.setSpacing(16)
         self._build()
         self.refresh()
 
     def _build(self) -> None:
-        header = QHBoxLayout()
-        left = QVBoxLayout()
-        title = QLabel("Панель ОТК")
-        title.setObjectName("pageTitle")
-        subtitle = QLabel(
-            "Добавляйте проекты, удаляйте их"
-            " и открывайте для работы",
-        )
-        subtitle.setObjectName("pageSub")
-        left.addWidget(title)
-        left.addWidget(subtitle)
-        header.addLayout(left)
-        header.addStretch()
-
+        btns = QHBoxLayout()
+        btns.addStretch()
         add_btn = QPushButton("Добавить проект")
         add_btn.setObjectName("primaryButton")
         add_btn.clicked.connect(self._add_project)
@@ -62,9 +54,9 @@ class ProjectsPage(QWidget):
         del_btn.setObjectName("dangerButton")
         del_btn.clicked.connect(self._delete_project)
 
-        header.addWidget(add_btn)
-        header.addWidget(del_btn)
-        self._layout.addLayout(header)
+        btns.addWidget(add_btn)
+        btns.addWidget(del_btn)
+        self._root.addLayout(btns)
 
         stats = QGridLayout()
         stats.addWidget(
@@ -83,7 +75,7 @@ class ProjectsPage(QWidget):
             StatCard("Статус", "MVP", "готов к тесту"),
             0, 3,
         )
-        self._layout.addLayout(stats)
+        self._root.addLayout(stats)
 
         card = QFrame()
         card.setObjectName("card")
@@ -97,16 +89,18 @@ class ProjectsPage(QWidget):
             "Последний контроль",
         ])
         self._table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch,
+            QHeaderView.ResizeMode.Stretch,
         )
         self._table.verticalHeader().setVisible(False)
-        self._table.cellDoubleClicked.connect(self._on_double_click)
+        self._table.cellDoubleClicked.connect(
+            self._on_double_click,
+        )
         card_layout.addWidget(self._table)
 
         open_btn = QPushButton("Открыть выбранный проект")
         open_btn.clicked.connect(self._open_current)
         card_layout.addWidget(open_btn)
-        self._layout.addWidget(card, 1)
+        self._root.addWidget(card, 1)
 
     def refresh(self) -> None:
         projects = self._service.list_projects()
@@ -144,19 +138,22 @@ class ProjectsPage(QWidget):
         return projects[row]
 
     def _add_project(self) -> None:
+        logger.debug("Действие: добавить проект")
         dlg = ProjectDialog(self)
-        if dlg.exec() != QDialog.Accepted:
+        if dlg.exec() != QDialog.DialogCode.Accepted:
             return
         name, dxf, desc = dlg.data()
         if not name:
             QMessageBox.warning(
-                self, "Ошибка", "Введите название проекта",
+                self, "Ошибка",
+                "Введите название проекта",
             )
             return
         self._service.add_project(name, dxf, desc)
         self.refresh()
 
     def _delete_project(self) -> None:
+        logger.debug("Действие: удалить проект")
         project = self._selected_project()
         if not project:
             QMessageBox.warning(
@@ -167,7 +164,7 @@ class ProjectsPage(QWidget):
             self, "Удаление",
             f"Удалить проект '{project.name}'?",
         )
-        if ans != QMessageBox.Yes:
+        if ans != QMessageBox.StandardButton.Yes:
             return
         self._service.delete_project(project.project_id)
         self.refresh()
@@ -175,6 +172,9 @@ class ProjectsPage(QWidget):
     def _open_current(self) -> None:
         project = self._selected_project()
         if project:
+            logger.info(
+                "Открытие проекта: %s", project.name,
+            )
             self._on_open_project(project)
 
     def _on_double_click(

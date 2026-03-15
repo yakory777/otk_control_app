@@ -1,28 +1,16 @@
 from __future__ import annotations
 
-from PySide6.QtWidgets import (
-    QFrame,
-    QLabel,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import QFrame, QPushButton, QVBoxLayout
+
+from app.ui.pages.base_page import BasePage
 
 
-class ReportsPage(QWidget):
+class ReportsPage(BasePage):
     def __init__(self) -> None:
-        super().__init__()
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 24, 24, 24)
-
-        title = QLabel("Отчеты")
-        title.setObjectName("pageTitle")
-        subtitle = QLabel(
+        super().__init__(
+            "Отчеты",
             "Экспорт, печать и шаблоны протоколов",
         )
-        subtitle.setObjectName("pageSub")
-        layout.addWidget(title)
-        layout.addWidget(subtitle)
 
         card = QFrame()
         card.setObjectName("card")
@@ -35,4 +23,4 @@ class ReportsPage(QWidget):
         card_layout.addWidget(QPushButton("Экспорт в Excel"))
         card_layout.addWidget(QPushButton("Печать"))
         card_layout.addStretch()
-        layout.addWidget(card, 1)
+        self._root.addWidget(card, 1)

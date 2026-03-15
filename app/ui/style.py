@@ -74,9 +74,10 @@ QPushButton:disabled { background: #f8fafc; color: #94a3b8; }
     background: #be123c;
     color: white;
     border: 1px solid #be123c;
-    border-radius: 16px;
-    padding: 11px 16px;
-    font-weight: 700;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
 }
 #dangerButton:hover { background: #9f1239; }
 
@@ -186,8 +187,8 @@ QGroupBox::title {
 }
 
 QGraphicsView {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: #1e2030;
+    border: 1px solid #334155;
     border-radius: 16px;
 }
 
@@ -196,4 +197,29 @@ QDialogButtonBox QPushButton { min-width: 80px; }
 
 /* ── Form layout labels ── */
 QLabel { color: #0f172a; background: transparent; }
+
+/* ── Карточки контрольных точек ── */
+#pointCard {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+}
+#pointCard:hover {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+}
+#pointCardSelected {
+    background: #0f172a;
+    border: 1px solid #0f172a;
+    border-radius: 16px;
+    color: white;
+}
+#pointCardSelected QLabel { color: white; }
+
+/* ── Ячейки свойств выбранного размера ── */
+#propCell {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+}
 """
